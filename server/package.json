@@ -1,0 +1,33 @@
+{
+  "name": "try-formidable-w-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start1": "nodemon src/index.js",
+    "start": "nodemon --trace-warnings --exec babel-node src/index.js"
+  },
+  "keywords": [],
+  "author": "klequis",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/cli": "^7.12.17",
+    "@babel/core": "^7.12.17",
+    "@babel/node": "^7.12.17",
+    "@babel/plugin-transform-runtime": "^7.12.17",
+    "@babel/preset-env": "^7.12.17",
+    "@babel/register": "^7.12.13",
+    "@babel/runtime": "^7.12.18",
+    "@babel/types": "^7.12.17",
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.11",
+    "@types/node": "^14.14.29",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-istanbul": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fs-extra": "^9.1.0",
+    "nodemon": "^2.0.7",
+    "ramda": "^0.27.1"
+  }
+}
