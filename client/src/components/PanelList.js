@@ -3,6 +3,12 @@ import { theme } from 'style/theme'
 import PropTypes from 'prop-types'
 import { contextList } from 'appWords'
 
+const PanelListDiv = styled.div`
+  flex-grow: 1;
+  flex-shring: 1;
+  flex-basis: 1;
+  width: 50%;
+`
 const PanelHeadingDiv = styled.div`
   text-align: center;
   padding: 4px;
@@ -20,12 +26,12 @@ const ListUl = styled.ul`
   margin-top: 0;
 `
 
-export const PanelList = ({ context = 'primary', children }) => {
+export const PanelList = ({ context = 'primary', children, heading }) => {
   return (
-    <div>
-      <PanelHeadingDiv context={context}>Panel Title</PanelHeadingDiv>
+    <PanelListDiv>
+      <PanelHeadingDiv context={context}>{heading}</PanelHeadingDiv>
       <ListUl>{children}</ListUl>
-    </div>
+    </PanelListDiv>
   )
 }
 

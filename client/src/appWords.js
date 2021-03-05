@@ -4,6 +4,7 @@ export const wdLight = 'light'
 export const wdPrimary = 'primary'
 export const wdSecondary = 'secondary'
 export const wdSuccess = 'success'
+export const wdWarning = 'warning'
 
 export const contextList = [
   wdDanger,
@@ -11,5 +12,6 @@ export const contextList = [
   wdLight,
   wdPrimary,
   wdSecondary,
-  wdSuccess
+  wdSuccess,
+  wdWarning
 ]

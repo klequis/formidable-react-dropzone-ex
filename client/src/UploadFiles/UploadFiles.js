@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import * as R from 'ramda'
-import { FileList } from './FileList'
 import { Button } from 'components'
 import { upload } from './upload'
 import { ResultTable } from './ResultTable'
@@ -11,13 +10,21 @@ import {
   DropMsgDiv,
   ButtonDiv,
   FileListDiv,
-  OnlyCSVMsgDiv,
-  PleaseSelectFilesDiv
+  OnlyCSVMsgDiv
 } from './uploadFilesStyles'
+import { wdSuccess, wdWarning } from 'appWords'
+import { PleaseSelectFiles } from './PleaseSelectFiles'
 
 import { PanelList, PanelListItem } from 'components'
+import { RejectedFilesWarning } from './RejectedFilesWarning'
 
-const groupFiles = R.groupBy((f) => (f.accept ? 'accepted' : 'rejected'))
+const groupFiles = (files) => {
+  const g = R.groupBy((f) => (f.accept ? 'accepted' : 'rejected'))(files)
+  return {
+    accepted: R.has('accepted')(g) ? g.accepted : [],
+    rejected: R.has('rejected')(g) ? g.rejected : []
+  }
+}
 
 export const UploadFiles = () => {
   const [_files, _setFiles] = useState({ accepted: [], rejected: [] })
@@ -25,21 +32,20 @@ export const UploadFiles = () => {
   const [_showPleaseSelectFiles, _setShowPleaseSelectFiles] = useState(false)
 
   const dropRef = useRef()
+  const _acceptedLength = _files.accepted.length
+  const _rejectedLength = _files.rejected.length
+  const _totalSelected = _acceptedLength + _rejectedLength
+  const _resultsLength = _results.length
 
-  const _upload = async () => {
-    if (_files.accepted.length > 0) {
-      _setShowPleaseSelectFiles(true)
+  const _uploadClick = async () => {
+    if (_acceptedLength > 0) {
       const r = await upload(_files.accepted)
-      console.log('r', r)
-
       _setResults(r)
-    } else {
-      _setShowPleaseSelectFiles(true)
     }
+    _setShowPleaseSelectFiles(_totalSelected === 0)
   }
 
   const onDrop = (acceptedFiles) => {
-    console.log('onDrop')
     _setFiles(groupFiles(acceptedFiles))
   }
 
@@ -47,8 +53,6 @@ export const UploadFiles = () => {
     onDrop,
     getFilesFromEvent: (event) => customFileGetter(event)
   })
-
-  console.log('_files', _files)
 
   return (
     <UploadFilesDiv id="UploadFilesDiv">
@@ -59,31 +63,36 @@ export const UploadFiles = () => {
           <OnlyCSVMsgDiv>
             <i>Only CSV files are accepted.</i>
           </OnlyCSVMsgDiv>
-          {_showPleaseSelectFiles ? (
-            <PleaseSelectFilesDiv>
-              Please select files to upload.
-            </PleaseSelectFilesDiv>
-          ) : null}
         </DropMsgDiv>
       </DropDiv>
-      {_results.length > 0
+      {_showPleaseSelectFiles ? <PleaseSelectFiles /> : null}
+      {_resultsLength > 0
         ? _results.map((f) => <ResultTable file={f} />)
         : null}
 
-      {_results.length === 0 &&
-      (_files.accepted.length > 0 || _files.rejected.length > 0) ? (
+      {_resultsLength === 0 && _rejectedLength > 0 ? (
+        <RejectedFilesWarning
+          acceptCount={_acceptedLength}
+          rejectCount={_rejectedLength}
+        />
+      ) : null}
+      {_resultsLength === 0 && (_acceptedLength > 0 || _rejectedLength > 0) ? (
         <>
           <FileListDiv id="fld-outer">
-            <FileList title="Accepted" files={_files.accepted} />
-            <FileList title="Rejected" files={_files.rejected} />
+            <PanelList context={wdSuccess} heading="Accepted">
+              {_files.accepted.map((f) => (
+                <PanelListItem key={f.name}>{f.name}</PanelListItem>
+              ))}
+            </PanelList>
+            <PanelList context={wdWarning} heading="Rejected">
+              {_files.rejected.map((f) => (
+                <PanelListItem key={f.name}>{f.name}</PanelListItem>
+              ))}
+            </PanelList>
           </FileListDiv>
-          <PanelList>
-            {_files.accepted.map((f) => (
-              <PanelListItem key={f.name}>{f.name}</PanelListItem>
-            ))}
-          </PanelList>
+
           <ButtonDiv>
-            <Button onClick={_upload} disabled={_showPleaseSelectFiles}>
+            <Button onClick={_uploadClick} disabled={_showPleaseSelectFiles}>
               Upload
             </Button>
           </ButtonDiv>
@@ -124,91 +133,17 @@ async function customFileGetter(event) {
 
 /*
 
-import React, { useRef, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import * as R from 'ramda'
-import { FileList } from './FileList'
-import { Button } from '../components/Button'
-import { upload } from './upload'
-import { ResultTable } from './ResultTable'
-import {
-  UploadFilesDiv,
-  DropDiv,
-  DropMsgDiv,
-  ButtonDiv,
-  FileListDiv,
-  OnlyCSVMsgDiv,
-  PleaseSelectFilesDiv
-} from './uploadFilesStyles'
-
-const groupFiles = R.groupBy((f) => (f.accept ? 'accepted' : 'rejected'))
-
-export const UploadFiles = () => {
-  const [_files, _setFiles] = useState({ accepted: [], rejected: [] })
-  const [_results, _setResults] = useState([])
-  const [_showPleaseSelectFiles, _setShowPleaseSelectFiles] = useState(false)
-  const [_showFileListDiv, _setShowFileListDiv] = useState(false)
-
-  const dropRef = useRef()
-
-  const _upload = async () => {
-    if (_files.accepted.length > 0) {
-      _setShowPleaseSelectFiles(true)
-      const r = await upload(_files.accepted)
-      console.log('r', r)
-
-      _setResults(r)
-    } else {
-      _setShowPleaseSelectFiles(true)
-    }
-  }
-
-  const onDrop = (acceptedFiles) => {
-    _setFiles(groupFiles(acceptedFiles))
-    _setShowFileListDiv(true)
-  }
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    getFilesFromEvent: (event) => customFileGetter(event)
-  })
-
-  return (
-    <UploadFilesDiv id="UploadFilesDiv">
-      <DropDiv {...getRootProps()} ref={dropRef}>
-        <input {...getInputProps()} />
-        <DropMsgDiv>
-          <div>Drag 'n' drop some files here, or click to select files.</div>
-          <OnlyCSVMsgDiv>
-            <i>Only CSV files are accepted.</i>
-          </OnlyCSVMsgDiv>
-          {_showPleaseSelectFiles ? (
-            <PleaseSelectFilesDiv>
-              Please select files to upload.
-            </PleaseSelectFilesDiv>
-          ) : null}
-        </DropMsgDiv>
-      </DropDiv>
-
-      {_results.length > 0 ? (
-        _results.map((f) => <ResultTable file={f} />)
-      ) : _showFileListDiv ? (
-        <>
-          <FileListDiv id="fld-outer">
-            <FileList title="Accepted" files={_files.accepted} />
-            <FileList title="Rejected" files={_files.rejected} />
-          </FileListDiv>
-          <ButtonDiv>
-            <Button onClick={_upload} disabled={_showPleaseSelectFiles}>
-              Upload
-            </Button>
-          </ButtonDiv>
-        </>
-      ) : null}
-    </UploadFilesDiv>
-  )
-}
-
+<ul className="list-group">
+              {_files.rejected.map((f) => (
+                <li
+                  className="list-group-item"
+                  style={{ width: 176 }}
+                  key={f.name}
+                >
+                  {f.name}
+                </li>
+              ))}
+            </ul>
 
 
 */
