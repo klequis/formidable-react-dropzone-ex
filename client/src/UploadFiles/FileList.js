@@ -1,12 +1,10 @@
 import styled from 'styled-components'
+import { ListGroup, ListGroupItem } from 'components'
 
 const FileListDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
-
   flex-basis: 50%;
-  // flex-shrink: 0;
-  // flex-grow: 0;
 `
 
 const TitleDiv = styled.div`
@@ -20,15 +18,11 @@ export const FileList = ({ title, files }) => {
   return (
     <FileListDiv id="fld-inner">
       <TitleDiv id="title-div">{title}</TitleDiv>
-      <ul className="list-group">
+      <ListGroup>
         {files.map((f) => {
-          return (
-            <li className="list-group-item" key={f.name}>
-              {f.name}
-            </li>
-          )
+          return <ListGroupItem key={f.name}>{f.name}</ListGroupItem>
         })}
-      </ul>
+      </ListGroup>
     </FileListDiv>
   )
 }

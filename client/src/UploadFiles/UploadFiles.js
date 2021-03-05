@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import * as R from 'ramda'
 import { FileList } from './FileList'
-import { Button } from '../components/Button'
+import { Button } from 'components'
 import { upload } from './upload'
 import { ResultTable } from './ResultTable'
 import {
@@ -14,6 +14,8 @@ import {
   OnlyCSVMsgDiv,
   PleaseSelectFilesDiv
 } from './uploadFilesStyles'
+
+import { PanelList, PanelListItem } from 'components'
 
 const groupFiles = R.groupBy((f) => (f.accept ? 'accepted' : 'rejected'))
 
@@ -50,7 +52,7 @@ export const UploadFiles = () => {
 
   return (
     <UploadFilesDiv id="UploadFilesDiv">
-      <DropDiv {...getRootProps()} ref={dropRef}>
+      <DropDiv id="DropDiv" {...getRootProps()} ref={dropRef}>
         <input {...getInputProps()} />
         <DropMsgDiv>
           <div>Drag 'n' drop some files here, or click to select files.</div>
@@ -75,6 +77,11 @@ export const UploadFiles = () => {
             <FileList title="Accepted" files={_files.accepted} />
             <FileList title="Rejected" files={_files.rejected} />
           </FileListDiv>
+          <PanelList>
+            {_files.accepted.map((f) => (
+              <PanelListItem key={f.name}>{f.name}</PanelListItem>
+            ))}
+          </PanelList>
           <ButtonDiv>
             <Button onClick={_upload} disabled={_showPleaseSelectFiles}>
               Upload
