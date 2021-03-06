@@ -11,13 +11,25 @@ import {
   ButtonDiv,
   OnlyCSVMsgDiv
 } from './uploadFilesStyles'
-// import { PleaseSelectFiles } from './PleaseSelectFiles'
 import { FileLists } from './FileLists'
 
 import { RejectedFilesWarning } from './RejectedFilesWarning'
 
+const _l = console.log
+
 const groupFiles = (files) => {
   const g = R.groupBy((f) => (f.accept ? 'accepted' : 'rejected'))(files)
+  // const { accepted, rejected } = g
+  // console.group('groupFiles')
+  // // _l('g', g)
+  // _l(`accepted (${R.type(accepted)})`, accepted)
+  // _l(`accepted[0] (${R.type(accepted)})`, accepted[0])
+  // _l(`accepted[0].length (${R.type(accepted)})`, accepted[0].length)
+  // _l(`accepted[1] (${R.type(accepted)})`, accepted[1])
+  // _l(`rejected (${R.type(rejected)})`, rejected)
+
+  // console.groupEnd()
+
   return {
     accepted: R.has('accepted')(g) ? g.accepted : [],
     rejected: R.has('rejected')(g) ? g.rejected : []
@@ -29,7 +41,7 @@ export const UploadFiles = () => {
   const [_results, _setResults] = useState([])
   const [_showPleaseSelectFiles, _setShowPleaseSelectFiles] = useState(false)
 
-  const dropRef = useRef()
+  const _dropRef = useRef()
   const _acceptedLength = _files.accepted.length
   const _rejectedLength = _files.rejected.length
   const _totalSelected = _acceptedLength + _rejectedLength
@@ -43,18 +55,34 @@ export const UploadFiles = () => {
     _setShowPleaseSelectFiles(_totalSelected === 0)
   }
 
-  const onDrop = (acceptedFiles) => {
-    _setFiles(groupFiles(acceptedFiles))
+  /**
+   *
+   * @param {*} acceptedFiles
+   */
+  const _onDrop = (acceptedFiles) => {
+    // one -->
+    // _setFiles(groupFiles(acceptedFiles))
+    // <--
+
+    const { accepted, rejected } = groupFiles(acceptedFiles)
+    // console.log('accepted', accepted)
+    // console.log('_files.accepted', _files.accepted)
+    _setFiles({
+      accepted: R.flatten([accepted, _files.accepted]),
+      rejected: R.flatten([rejected, _files.rejected])
+    })
   }
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
+    onDrop: _onDrop,
     getFilesFromEvent: (event) => customFileGetter(event)
   })
 
+  // console.log('_files', _files)
+
   return (
     <UploadFilesDiv id="UploadFilesDiv">
-      <DropDiv id="DropDiv" {...getRootProps()} ref={dropRef}>
+      <DropDiv id="DropDiv" {...getRootProps()} ref={_dropRef}>
         <input {...getInputProps()} />
         <DropMsgDiv>
           <div>Drag 'n' drop some files here, or click to select files.</div>
@@ -63,7 +91,7 @@ export const UploadFiles = () => {
           </OnlyCSVMsgDiv>
         </DropMsgDiv>
       </DropDiv>
-      {/* {_showPleaseSelectFiles ? <PleaseSelectFiles /> : null} */}
+
       {_resultsLength > 0 ? <ResultTable files={_results} /> : null}
 
       {_resultsLength === 0 && _rejectedLength > 0 ? (
@@ -72,6 +100,7 @@ export const UploadFiles = () => {
           rejectCount={_rejectedLength}
         />
       ) : null}
+
       {_resultsLength === 0 && (_acceptedLength > 0 || _rejectedLength > 0) ? (
         <>
           <FileLists files={_files} />

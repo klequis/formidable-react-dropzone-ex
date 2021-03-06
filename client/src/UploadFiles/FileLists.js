@@ -10,7 +10,12 @@ export const FileListDiv = styled.div`
 export const FileLists = ({ files }) => {
   if (!files) return null
   const { accepted, rejected } = files
-
+  // console.group('FileLists')
+  // console.log('files', files)
+  // console.log('accepted', accepted)
+  // console.log('rejected', rejected)
+  // console.log('accepted[0]', accepted[0])
+  // console.groupEnd()
   return (
     <FileListDiv>
       {accepted ? (
