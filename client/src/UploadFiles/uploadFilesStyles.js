@@ -6,27 +6,28 @@ export const UploadFilesDiv = styled.div`
   flex-flow: column nowrap;
   align-items: center;
   width: 50%;
-  @media (max-width: ${theme.breakpoints.sm}) {
-    color: green;
-  }
 `
+
 // min-width: 500px;
 export const DropDiv = styled.div`
   display: flex;
   align-items: center;
-  padding: 30px 30px;
-  margin-bottom: 1rem;
+  padding: ${theme.unit * 8}px;
   border: 1px solid transparent;
   border-radius: 0.25rem;
-  background-color: var(--primary);
-  width: 50%;
+  background-color: ${theme.colors.primary};
+  width: 100%;
+  ${'' /* @media (max-width: ${theme.breakpoints.sm}) {
+    width: 100%;
+  } */}
 `
-// border-color: #c7d1db;
+// margin-bottom: 1rem;
 
 export const DropMsgDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  width: 100%;
 `
 
 export const ButtonDiv = styled.div`
@@ -44,3 +45,18 @@ export const OnlyCSVMsgDiv = styled.div`
 //   background-color: var(--warning);
 //   margin-top: 20px;
 // `
+
+/*
+
+export const DropDiv = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 30px 30px;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  background-color: var(--primary);
+  width: 50%;
+`
+
+*/
