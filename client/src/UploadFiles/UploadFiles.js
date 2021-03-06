@@ -9,13 +9,11 @@ import {
   DropDiv,
   DropMsgDiv,
   ButtonDiv,
-  FileListDiv,
   OnlyCSVMsgDiv
 } from './uploadFilesStyles'
-import { wdSuccess, wdWarning } from 'appWords'
-import { PleaseSelectFiles } from './PleaseSelectFiles'
+// import { PleaseSelectFiles } from './PleaseSelectFiles'
+import { FileLists } from './FileLists'
 
-import { PanelList, PanelListItem } from 'components'
 import { RejectedFilesWarning } from './RejectedFilesWarning'
 
 const groupFiles = (files) => {
@@ -65,10 +63,8 @@ export const UploadFiles = () => {
           </OnlyCSVMsgDiv>
         </DropMsgDiv>
       </DropDiv>
-      {_showPleaseSelectFiles ? <PleaseSelectFiles /> : null}
-      {_resultsLength > 0
-        ? _results.map((f) => <ResultTable file={f} />)
-        : null}
+      {/* {_showPleaseSelectFiles ? <PleaseSelectFiles /> : null} */}
+      {_resultsLength > 0 ? <ResultTable files={_results} /> : null}
 
       {_resultsLength === 0 && _rejectedLength > 0 ? (
         <RejectedFilesWarning
@@ -78,19 +74,7 @@ export const UploadFiles = () => {
       ) : null}
       {_resultsLength === 0 && (_acceptedLength > 0 || _rejectedLength > 0) ? (
         <>
-          <FileListDiv id="fld-outer">
-            <PanelList context={wdSuccess} heading="Accepted">
-              {_files.accepted.map((f) => (
-                <PanelListItem key={f.name}>{f.name}</PanelListItem>
-              ))}
-            </PanelList>
-            <PanelList context={wdWarning} heading="Rejected">
-              {_files.rejected.map((f) => (
-                <PanelListItem key={f.name}>{f.name}</PanelListItem>
-              ))}
-            </PanelList>
-          </FileListDiv>
-
+          <FileLists files={_files} />
           <ButtonDiv>
             <Button onClick={_uploadClick} disabled={_showPleaseSelectFiles}>
               Upload

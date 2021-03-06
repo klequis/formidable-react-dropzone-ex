@@ -36,11 +36,6 @@ export const ButtonDiv = styled.div`
   width: 100%;
 `
 
-export const FileListDiv = styled.div`
-  display: flex;
-  width: 100%;
-`
-
 export const OnlyCSVMsgDiv = styled.div`
   padding-top: 4px;
 `
