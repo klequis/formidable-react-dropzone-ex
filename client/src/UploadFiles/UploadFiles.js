@@ -143,20 +143,3 @@ async function customFileGetter(event) {
   console.log('fileList', fileList)
   return R.map(updateAcceptProp, fileList)
 }
-
-/*
-
-<ul className="list-group">
-              {_files.rejected.map((f) => (
-                <li
-                  className="list-group-item"
-                  style={{ width: 176 }}
-                  key={f.name}
-                >
-                  {f.name}
-                </li>
-              ))}
-            </ul>
-
-
-*/

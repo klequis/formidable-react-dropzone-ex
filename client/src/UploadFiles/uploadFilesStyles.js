@@ -19,9 +19,9 @@ export const DropDiv = styled.div`
   border: 1px solid transparent;
   border-radius: 0.25rem;
   background-color: var(--primary);
-  border-color: #c7d1db;
   width: 50%;
 `
+// border-color: #c7d1db;
 
 export const DropMsgDiv = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ export const OnlyCSVMsgDiv = styled.div`
   padding-top: 4px;
 `
 
-export const PleaseSelectFilesDiv = styled.div`
-  background-color: var(--warning);
-  margin-top: 20px;
-`
+// export const PleaseSelectFilesDiv = styled.div`
+//   background-color: var(--warning);
+//   margin-top: 20px;
+// `
